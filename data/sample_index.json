@@ -1,0 +1,34 @@
+{
+  "chunks": [
+    {
+      "text": "Sample Celebrity is known for work in film and music.",
+      "topic": "career",
+      "metadata": {
+        "source": "Wikipedia",
+        "title": "Sample Celebrity",
+        "url": "https://example.com/sample-celebrity",
+        "chunk_id": 0
+      }
+    },
+    {
+      "text": "They often emphasize discipline, curiosity, and gratitude in interviews.",
+      "topic": "values",
+      "metadata": {
+        "source": "Wikipedia",
+        "title": "Sample Celebrity",
+        "url": "https://example.com/sample-celebrity",
+        "chunk_id": 1
+      }
+    },
+    {
+      "text": "In a recent interview, Sample Celebrity discussed daily routines and writing process.",
+      "topic": "routine",
+      "metadata": {
+        "source": "Interview",
+        "title": "Sample Interview",
+        "url": "https://example.com/interview",
+        "chunk_id": 0
+      }
+    }
+  ]
+}

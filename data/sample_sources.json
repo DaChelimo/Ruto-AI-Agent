@@ -1,0 +1,14 @@
+[
+  {
+    "source": "Wikipedia",
+    "title": "Sample Celebrity",
+    "url": "https://example.com/sample-celebrity",
+    "text": "Sample Celebrity is known for work in film and music. They often emphasize discipline, curiosity, and gratitude in interviews. They describe collaboration as key to creative growth."
+  },
+  {
+    "source": "Interview",
+    "title": "Sample Interview",
+    "url": "https://example.com/interview",
+    "text": "In a recent interview, Sample Celebrity discussed daily routines and writing process. They shared that consistency matters more than inspiration alone. They also encouraged new artists to keep learning from mentors."
+  }
+]
