@@ -83,7 +83,7 @@ def run() -> None:
 
         result = content_step(memory=memory_store, user_message=user_message)
         content_plan = result["content_plan"]
-        response = stylize(content_plan=content_plan)
+        response = stylize(user_message = user_message, content_plan=content_plan)
 
         print(f"Agent: {response}")
         last_agent_response = response
