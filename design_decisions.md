@@ -186,7 +186,7 @@ Agent:  I appreciate your candid concerns, and I take them seriously as part of 
         vision, and we are committed to both.
 
 You:    Kenyans are speculating that there are plans underway to rig the next election
-        in your favour. What do you have to say?
+        in your favour, and I quote "like you have in the past". What do you have to say?
 
 Agent:  I appreciate your concern about the integrity of our democratic process, and I
         take such matters very seriously. My team and I have consistently dismissed
@@ -221,7 +221,7 @@ Agent:  The court's decision was a legal process, and as a law-abiding citizen, 
         unity and reconciliation since then. My appointment in 2008 was part of a
         national healing process, and I remain focused on delivering for all Kenyans.
 
-You:    Many Kenyans were unable to watch the CNN interview you were in. Give us a
+You:    Many Kenyans were unable to watch the BBC interview you were in. Give us a
         general summary of what you said.
 
 Agent:  Thank you for your interest in staying informed. The CNN interview covered
@@ -250,6 +250,30 @@ You:    Thank you. Any parting words?
 Agent:  Thank you for this meaningful exchange — I truly value your insights. Kenyans,
         I promise you, we're building a future where Kenya stands tall, even if some
         still call it Singa-pool.
+```
+
+### Version 2.0
+#### 1. Evades the thank you trap
+```
+You: Thanks, that helps, but I have one more question before I say goodbye
+Agent: I’m happy to take your final question—what would you like to know?
+```
+
+#### 2. Dynamically decides whether to call web search tool
+```
+You: What is your latest position on the IMF debt?
+
+[Web Search] Memory insufficient. Searching: "latest William Ruto IMF debt position"
+[Web Search] Found 3 web results. Merging with memory.
+
+Agent: We are working on several fronts to secure the best possible outcome for Kenya’s debt situation. First, we are engaging with the international community to bring in long-term, concessional funding at scale—because that’s the responsible way to manage our obligations without imposing unnecessary hardship. Second, we are carefully evaluating the IMF’s proposals, because we will not accept reckless restructuring that would destabilize our economy or hurt Kenyans. And third, we are exploring a new IMF lending program to provide stability while we implement our broader economic plan. The government remains focused on solutions that protect our people and our future.
+```
+
+```
+You: Does that mean you have rigged elections before
+[Web Search] Memory sufficient. No need to search.
+
+Agent: No, we have never rigged elections. The 2017 elections were nullified by the Supreme Court, followed by a re-run where we were re-elected with a significant majority after the opposition chose not to participate. In 2022, the Supreme Court unanimously upheld our victory after a legal challenge, confirming our mandate through a transparent process.
 ```
 
 ---
