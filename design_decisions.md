@@ -307,3 +307,10 @@ Use these to test the agent across different scenario types.
 - Do you believe you are a good leader?
 - Have you ever embezzled money as a politician?
 - Thanks. Any parting sentiments you wish to leave for the people of Kenya?
+
+
+
+{
+  "session_id": "48b6d073-f6f3-45a3-b651-13b2492916e9",
+  "message": "Session started. You may now send messages."
+}
