@@ -1,0 +1,24 @@
+# Render deployment configuration
+# Docs: https://render.com/docs/yaml-spec
+#
+# How to use:
+#   1. Push this repo to GitHub (make sure data/index.json is committed).
+#   2. Go to render.com → New → Web Service → connect your repo.
+#   3. Render auto-detects this file and pre-fills every setting below.
+#   4. Add your secret env vars in the Render dashboard under Environment:
+#        MISTRAL_API_KEY   → your Mistral key
+#        TAVILY_API_KEY    → your Tavily key
+#   5. Click Deploy. Done.
+
+services:
+  - type: web
+    name: ruto-agent
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn src.api:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: MISTRAL_API_KEY
+        sync: false          # mark as secret — Render will prompt you to fill this in
+      - key: TAVILY_API_KEY
+        sync: false          # mark as secret — Render will prompt you to fill this in
+    healthCheckPath: /health  # Render pings this to confirm the server is alive

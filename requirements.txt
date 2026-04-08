@@ -1,2 +1,15 @@
-# External dependency used by src/llm.py
+# ── LLM & search ─────────────────────────────────────────────────────────────
 mistralai
+tavily-python
+
+# ── Web server ────────────────────────────────────────────────────────────────
+fastapi
+uvicorn[standard]          # [standard] pulls in websockets + httptools for speed
+
+# ── Data / ML ─────────────────────────────────────────────────────────────────
+numpy
+scikit-learn
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+python-dotenv
+pydantic
