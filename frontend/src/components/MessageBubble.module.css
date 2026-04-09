@@ -1,0 +1,209 @@
+/* ── Shared ───────────────────────────────────────────────────────────────── */
+.text {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--color-text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── User bubble ─────────────────────────────────────────────────────────── */
+.userRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-lg);
+  animation: slideIn 0.22s ease-out;
+}
+
+.userBubble {
+  max-width: 70%;
+  background: var(--color-bg-subtle);
+  border-radius: var(--radius-md) var(--radius-md) var(--space-xs) var(--radius-md);
+  padding: var(--space-md) 20px;
+}
+
+/* ── Agent bubble ─────────────────────────────────────────────────────────── */
+.agentRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  animation: slideIn 0.22s ease-out;
+}
+
+.avatar {
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  margin-top: 2px;
+}
+
+.agentBubble {
+  max-width: 70%;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md) var(--radius-md) var(--radius-md) var(--space-xs);
+  padding: var(--space-md) 20px;
+  box-shadow: 0 1px 3px var(--color-card-shadow);
+}
+
+/* ── Error bubble ─────────────────────────────────────────────────────────── */
+.errorRow {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-lg);
+  animation: slideIn 0.22s ease-out;
+}
+
+.errorBubble {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  border-radius: var(--radius-md);
+}
+
+.errorText {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-error-text);
+}
+
+.retryBtn {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-error-text);
+  padding: 4px 10px;
+  border: 1px solid var(--color-error-border);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.retryBtn:hover {
+  background: var(--color-error-border);
+}
+
+/* ── Welcome screen ──────────────────────────────────────────────────────── */
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: var(--space-sm);
+  padding: var(--space-2xl) var(--space-lg);
+  text-align: center;
+}
+
+.welcomeAvatar {
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-sm);
+}
+
+.welcomeName {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.welcomeSub {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-lg);
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: center;
+  max-width: 540px;
+}
+
+.chip {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  padding: 8px var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.chip:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+  border-color: #cccccc;
+}
+
+/* ── Ended state ─────────────────────────────────────────────────────────── */
+.endedContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg) 0 var(--space-xl);
+}
+
+.endedLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.newConvBtn {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  padding: 8px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.newConvBtn:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+/* ── Animations ──────────────────────────────────────────────────────────── */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .userBubble,
+  .agentBubble {
+    max-width: 90%;
+  }
+
+  .chipRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .chip {
+    text-align: left;
+  }
+}

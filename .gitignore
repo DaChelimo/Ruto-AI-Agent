@@ -1,1 +1,12 @@
 .env
+
+# Python bytecode cache
+__pycache__/
+*.py[cod]
+
+# Frontend dependencies
+frontend/node_modules/
+
+# Frontend build output
+frontend/dist/
+frontend/.vite/

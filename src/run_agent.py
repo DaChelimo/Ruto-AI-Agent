@@ -1,6 +1,7 @@
 """Agent runner: wire memory, content, style, and chat loop."""
 
 from .content_module import content_step
+from .conversation_memory import ConvMemory
 from .memory_store import load_memory_store
 from .style_module import stylize
 from .llm import query_planner_llm, query_classifier_llm
@@ -63,11 +64,12 @@ Sign-off:"""
 
 
 def run() -> None:
-    """Run a basic CLI chat loop."""
+    """Run a basic CLI chat loop with full conversational memory."""
     memory_store = load_memory_store()
-    print(f"Loaded memory store from data/store.json.")
+    print("Loaded memory store from data/store.json.")
 
     last_agent_response = ""
+    conv_memory = ConvMemory()      # per-session conversational memory
 
     while True:
         user_message = input("You: ").strip()
@@ -81,12 +83,20 @@ def run() -> None:
             print(f"Agent: {signoff}")
             break
 
-        result = content_step(memory=memory_store, user_message=user_message)
+        result = content_step(
+            memory=memory_store,
+            user_message=user_message,
+            conv_memory=conv_memory,
+        )
         content_plan = result["content_plan"]
-        response = stylize(user_message = user_message, content_plan=content_plan)
+        response = stylize(user_message=user_message, content_plan=content_plan)
 
         print(f"Agent: {response}")
         last_agent_response = response
+
+        # Record the completed turn — triggers compression automatically
+        # if the exact buffer exceeds MAX_EXACT_TURNS (4)
+        conv_memory.add_turn(user_message, response)
 
 
 if __name__ == "__main__":
