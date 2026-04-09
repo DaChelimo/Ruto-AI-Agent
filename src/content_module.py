@@ -239,6 +239,12 @@ def make_conversational_plan(user_message: str, conv_memory: ConvMemory) -> str:
 
     Content plan:"""
 
+    print("\n" + "─" * 60)
+    print("  CONVERSATIONAL PLANNER INPUTS")
+    print("─" * 60)
+    print(f"[user_message]\n{user_message}\n")
+    print(f"[memory_ctx]\n{memory_ctx.strip() if memory_ctx.strip() else '(empty — first turn)'}")
+    print("─" * 60 + "\n")
     return query_planner_llm(prompt, temperature=0.0)
 
 
@@ -272,6 +278,13 @@ def make_factual_plan(
 
     Content plan:"""
 
+    print("\n" + "─" * 60)
+    print("  FACTUAL PLANNER INPUTS")
+    print("─" * 60)
+    print(f"[user_message]\n{user_message}\n")
+    print(f"[memory_ctx]\n{memory_ctx.strip() if memory_ctx.strip() else '(empty — first turn)'}\n")
+    print(f"[evidence]\n{evidence_str.strip()}")
+    print("─" * 60 + "\n")
     return query_planner_llm(prompt, temperature=0.0)
 
 
@@ -303,6 +316,79 @@ def make_hybrid_plan(
 
     Content plan:"""
 
+    print("\n" + "─" * 60)
+    print("  HYBRID PLANNER INPUTS")
+    print("─" * 60)
+    print(f"[user_message]\n{user_message}\n")
+    print(f"[memory_ctx]\n{memory_ctx.strip() if memory_ctx.strip() else '(empty — first turn)'}\n")
+    print(f"[evidence]\n{evidence_str.strip()}")
+    print("─" * 60 + "\n")
+    return query_planner_llm(prompt, temperature=0.0)
+
+
+# ── Recall detection ───────────────────────────────────────────────────────────
+
+_RECALL_KEYWORDS = {
+    "summary", "summarize", "summarise", "recap", "recapping",
+    "everything we", "everything we've", "all we", "all we've",
+    "what have we", "what did we", "what we have", "what we've",
+    "we talked about", "we discussed", "we've talked", "we've discussed",
+    "catch me up", "catch up", "fast-forward", "fast forward",
+    "remind me of everything", "remind me of what", "remind me what",
+    "what was discussed", "what has been discussed",
+}
+
+def _is_recall_request(user_message: str) -> bool:
+    """Return True if the user is asking for a recap of the whole conversation."""
+    lower = user_message.lower()
+    return any(kw in lower for kw in _RECALL_KEYWORDS)
+
+
+def make_recall_plan(user_message: str, conv_memory: ConvMemory) -> str:
+    """Dedicated planner for recall/summary requests.
+
+    Unlike make_conversational_plan, this one is explicitly instructed to be
+    comprehensive — enumerating every topic from both the summary and the recent
+    exact turns, with specifics, not generic filler.
+    """
+    memory_ctx = _wrap_memory_for_planner(conv_memory)
+
+    prompt = f"""You are a content planner for a conversational AI agent playing William Ruto, President of Kenya.
+
+The user has asked for a summary or recap of everything discussed in the conversation so far.
+This is NOT a small-talk message — it requires a comprehensive enumeration of all topics.
+
+{memory_ctx}
+
+Your job: produce a detailed topic-by-topic enumeration plan using BOTH the running summary
+AND the recent exact turns above.
+
+RULES FOR THIS PLAN:
+1. List EVERY distinct topic discussed, in chronological order — do not skip any.
+2. For each topic write 1-2 bullets capturing the SPECIFIC content discussed.
+   Bad (too vague):  "Economic situation was discussed"
+   Good (specific):  "Economy — macroeconomic stabilization: inflation down from 9% to 4.3%,
+                      exchange rate stable; manufacturing target: 7% → 20% of GDP by 2030"
+3. Do NOT compress multiple separate topics into one bullet.
+4. Do NOT write generic filler. Use the actual names, numbers, and events from the memory.
+5. Include ALL topics without exception: greetings, introductions, Gikomba demolitions, people
+   affected, economic situation, strengths, weaknesses, Raila, and anything else that appears
+   in the memory.
+6. Do NOT add a "keep it brief" or "invite further questions" bullet — this plan is for
+   comprehensive recall, not small talk.
+7. The stylizer will turn this into Ruto's spoken voice — your job is to give it the full
+   content to work with, not to pre-edit for length.
+
+User message: {user_message}
+
+Comprehensive topic-by-topic enumeration plan:"""
+
+    print("\n" + "─" * 60)
+    print("  RECALL PLANNER INPUTS")
+    print("─" * 60)
+    print(f"[user_message]\n{user_message}\n")
+    print(f"[memory_ctx]\n{memory_ctx.strip() if memory_ctx.strip() else '(empty — no prior turns)'}")
+    print("─" * 60 + "\n")
     return query_planner_llm(prompt, temperature=0.0)
 
 
@@ -366,18 +452,25 @@ def content_step(
             "content_plan":     str,
             "retrieved_chunks": list[dict],
             "pipeline_steps":   list[str],
-            "message_type":     str,         # CONVERSATIONAL | FACTUAL | HYBRID
+            "message_type":     str,          # CONVERSATIONAL | FACTUAL | HYBRID
+            "response_mode":    str,          # "standard" | "recall"
         }
     """
     pipeline_steps: list[str] = []
     retrieved: list[dict] = []
+    response_mode = "standard"
 
     # ── Step 1: Classify (with lightweight memory context) ───────────────────
     pipeline_steps.append("CLASSIFYING MESSAGE")
     message_type = classify_message(user_message, conv_memory)
 
     if message_type == "CONVERSATIONAL":
-        plan = make_conversational_plan(user_message, conv_memory)
+        # Detect recall/summary requests and route to the dedicated recall planner
+        if _is_recall_request(user_message):
+            response_mode = "recall"
+            plan = make_recall_plan(user_message, conv_memory)
+        else:
+            plan = make_conversational_plan(user_message, conv_memory)
 
     elif message_type == "FACTUAL":
         # ── Step 2: Retrieve ─────────────────────────────────────────────────
@@ -413,4 +506,5 @@ def content_step(
         "retrieved_chunks": retrieved,
         "pipeline_steps":   pipeline_steps,
         "message_type":     message_type,
+        "response_mode":    response_mode,   # "recall" | "standard"
     }

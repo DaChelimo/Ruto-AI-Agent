@@ -92,9 +92,21 @@ class ConvMemory:
     # ── Private ────────────────────────────────────────────────────────────────
 
     def _compress(self) -> None:
-        """Move all overflow turns into the running summary, keep last MAX_EXACT_TURNS."""
-        overflow: list[Turn] = self.recent_turns[:-MAX_EXACT_TURNS]
-        self.recent_turns = self.recent_turns[-MAX_EXACT_TURNS:]
+        """Compress all buffered turns except the just-added one into the summary.
+
+        This fires only when the buffer exceeds MAX_EXACT_TURNS.  All older turns
+        are moved into the summary at once, and the buffer resets to contain only
+        the current (most recently added) turn.  This means compression fires once
+        every MAX_EXACT_TURNS turns — not after every single turn.
+
+        Compression schedule example (MAX_EXACT_TURNS = 4):
+          After T4: buffer = [T1, T2, T3, T4]           — no compress
+          After T5: compress [T1,T2,T3,T4] → summary,   buffer = [T5]
+          After T8: buffer = [T5,T6,T7,T8]              — no compress
+          After T9: compress [T5,T6,T7,T8] → summary,   buffer = [T9]
+        """
+        overflow: list[Turn] = self.recent_turns[:-1]   # everything except current turn
+        self.recent_turns = self.recent_turns[-1:]       # keep only the current turn
 
         overflow_text = "\n".join(
             f"User:  {t.user}\nAgent: {t.agent}" for t in overflow
@@ -107,6 +119,11 @@ class ConvMemory:
 
         self.summary = query_planner_llm(prompt, temperature=0.0).strip()
         print(f"[ConvMemory] Compressed {len(overflow)} turn(s) into running summary.")
+        print("\n" + "═" * 60)
+        print("  RUNNING SUMMARY (after compression)")
+        print("═" * 60)
+        print(self.summary)
+        print("═" * 60 + "\n")
 
 
 # ── Summary prompt builders ─────────────────────────────────────────────────────
@@ -174,6 +191,18 @@ STRICT RULES:
 4. If an ambiguous pronoun now has a clearer antecedent confirmed by the new turns, refine its entry.
 5. EXTEND the Chronology with new entries for the new turns in order.
 6. Keep entries concise — do not pad, repeat, or balloon the summary.
+
+ENTITY PRESERVATION RULES (critical — violations cause reference resolution failures):
+7. Every named entity already listed in ## ENTITIES MUST appear in the updated ## ENTITIES section
+   with its original name unchanged. Never rename, merge, abbreviate, or abstract existing entities.
+   Example: if "Gikomba markets" is listed, it must remain "Gikomba markets" — not "local markets"
+   or "informal markets" or folded into a broader category.
+8. Only ADD new entities from the new turns. Never remove or replace existing ones.
+
+CHRONOLOGY PRESERVATION RULES:
+9. The ## CHRONOLOGY section must only GROW — never shrink. Copy every existing chronology line
+   exactly as written, then append new lines for the new turns at the bottom.
+   Never rewrite, consolidate, or summarise existing chronology entries.
 
 EXISTING SUMMARY:
 {existing_summary}
