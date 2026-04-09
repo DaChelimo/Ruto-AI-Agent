@@ -64,6 +64,7 @@ def process_turn(
     response = stylize(
         user_message=user_message,
         content_plan=result["content_plan"],
+        response_mode=result.get("response_mode", "standard"),
     )
 
     # ── 3. Mark the final step ───────────────────────────────────────────────────

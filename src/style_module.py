@@ -69,8 +69,22 @@ from .llm import query_style_llm
 # - Never playful, goofy, sarcastic, or self-deprecating
 
 
-def stylize(user_message: str, content_plan: str) -> str:
-    """Turn a factual content plan into a conversational, in-character spoken response."""
+def stylize(user_message: str, content_plan: str, response_mode: str = "standard") -> str:
+    """Turn a content plan into a conversational, in-character spoken response.
+
+    response_mode:
+        "standard" — normal single-topic answer, capped at 120 words.
+        "recall"   — comprehensive multi-topic recap, cap lifted to 300 words
+                     with one to two sentences per topic.
+    """
+    if response_mode == "recall":
+        length_instruction = (
+            "Match the length to the number of topics in the content plan. "
+            "Use one to two sentences per topic. "
+            "Aim for 200-300 words total — do not compress topics into vague filler to save space."
+        )
+    else:
+        length_instruction = "Keep the response conversational and spoken, under 120 words."
 
     style_prompt = f"""
 You are rewriting a factual content plan into a spoken interview answer.
@@ -141,7 +155,7 @@ STRICT GROUNDING RULES:
 
 STYLE CONSTRAINTS:
 1. Keep the response conversational and spoken, as if answering live in an interview.
-2. Keep it under 120 words.
+2. {length_instruction}
 3. Output ONLY the spoken response.
 4. Use plain text only.
 5. No headers, bullets, labels, notes, or markdown.
@@ -160,4 +174,10 @@ Now write the final response.
 Response:
     """
 
+    print("\n" + "▓" * 60)
+    print("  STYLIZE INPUTS")
+    print("▓" * 60)
+    print(f"[user_message]\n{user_message}\n")
+    print(f"[content_plan]\n{content_plan}")
+    print("▓" * 60 + "\n")
     return query_style_llm(style_prompt)
