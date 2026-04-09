@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28">
+  <!-- Dark base -->
+  <rect width="28" height="28" rx="8" fill="#1A1A1A"/>
+  <!-- Kenyan flag stripe: top (black is background) -->
+  <!-- Red band -->
+  <rect x="0" y="9" width="28" height="4" fill="#BB0000" opacity="0.85"/>
+  <!-- Green band -->
+  <rect x="0" y="15" width="28" height="4" fill="#006600" opacity="0.85"/>
+  <!-- Initials -->
+  <text
+    x="14"
+    y="15.5"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="9"
+    font-weight="bold"
+    fill="#FFFFFF"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    letter-spacing="0.5"
+  >WR</text>
+</svg>

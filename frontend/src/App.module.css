@@ -1,0 +1,53 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+/* Main content area: pipeline (left) + chat (right) */
+.main {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── Toast ──────────────────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  top: calc(var(--header-height) + var(--space-md));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background: var(--color-accent);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  animation: toastIn 0.25s ease-out;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0);    }
+}
+
+/* ── Responsive: tablet stacks pipeline above chat ─────────────────────── */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .main {
+    flex-direction: column;
+  }
+}
+
+/* ── Mobile: pipeline hidden (shown inline by ChatArea) ─────────────────── */
+@media (max-width: 767px) {
+  .main {
+    flex-direction: column;
+  }
+}

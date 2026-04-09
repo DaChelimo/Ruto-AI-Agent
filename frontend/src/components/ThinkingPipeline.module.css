@@ -1,0 +1,209 @@
+/* ── Panel container ─────────────────────────────────────────────────────── */
+.panel {
+  flex-shrink: 0;
+  width: 0;
+  overflow: hidden;
+  border-right: 0px solid var(--color-border);
+  background: var(--color-bg);
+  transition:
+    width 0.38s cubic-bezier(0.4, 0, 0.2, 1),
+    border-right-width 0.38s;
+}
+
+.panel.visible {
+  width: var(--pipeline-width);
+  border-right-width: 1px;
+}
+
+.inner {
+  width: var(--pipeline-width);
+  padding: var(--space-xl) var(--space-lg);
+  overflow-y: auto;
+  height: 100%;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.header {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin-bottom: var(--space-lg);
+}
+
+/* ── Step list ───────────────────────────────────────────────────────────── */
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Individual step ─────────────────────────────────────────────────────── */
+.step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 10px 0 10px 26px;
+  animation: fadeInStep 0.28s ease-out both;
+}
+
+/* Vertical connecting line: runs from center of this dot to center of next */
+.connector {
+  position: absolute;
+  left: 5px;          /* center of the 12px dot = 26px indent - 12px + 5px */
+  top: 24px;          /* below the dot */
+  bottom: -10px;
+  width: 2px;
+  background: var(--color-pipeline-line);
+  border-radius: 1px;
+}
+
+/* ── Dot ─────────────────────────────────────────────────────────────────── */
+.dot {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  line-height: 1;
+  color: var(--color-status-pending);
+  width: 12px;
+  text-align: center;
+  transition: color 0.2s ease;
+}
+
+.stepCompleted .dot {
+  color: var(--color-status-done);
+}
+
+.stepActive .dot {
+  color: var(--color-status-active);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+/* ── Icon ─────────────────────────────────────────────────────────────────── */
+.icon {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+}
+
+.stepCompleted .icon,
+.stepActive .icon {
+  color: var(--color-text-secondary);
+}
+
+/* ── Label ────────────────────────────────────────────────────────────────── */
+.label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-status-pending);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.stepCompleted .label {
+  color: var(--color-text-secondary);
+}
+
+.stepActive .label {
+  color: var(--color-text-primary);
+}
+
+.chevron {
+  font-size: 9px;
+  opacity: 0.5;
+  margin-left: 2px;
+}
+
+/* ── Cursor blink on active step ─────────────────────────────────────────── */
+.cursor {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  animation: blink 1s step-end infinite;
+  margin-left: 1px;
+}
+
+/* ── States ───────────────────────────────────────────────────────────────── */
+.stepPending {
+  opacity: 0.45;
+}
+
+/* ── Animations ──────────────────────────────────────────────────────────── */
+@keyframes pulse {
+  0%, 100% { opacity: 1;   transform: translateY(-50%) scale(1);   }
+  50%       { opacity: 0.4; transform: translateY(-50%) scale(1.35); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes fadeInStep {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+/* ── Tablet: panel goes to top, full width, collapsible ──────────────────── */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .panel {
+    width: 100% !important;
+    max-height: 0;
+    border-right: none;
+    border-bottom: 0px solid var(--color-border);
+    overflow: hidden;
+    transition:
+      max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1),
+      border-bottom-width 0.38s;
+  }
+
+  .panel.visible {
+    width: 100% !important;
+    max-height: 240px;
+    border-right-width: 0;
+    border-bottom-width: 1px;
+  }
+
+  .inner {
+    width: 100%;
+    padding: var(--space-md) var(--space-lg);
+    height: auto;
+  }
+
+  .list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-lg);
+  }
+
+  .step {
+    padding: 4px 0 4px 22px;
+  }
+
+  .connector {
+    display: none;
+  }
+}
+
+/* ── Mobile: compact strip above agent response (handled in ChatArea) ────── */
+@media (max-width: 767px) {
+  .panel,
+  .panel.visible {
+    width: 100% !important;
+    max-height: 0 !important;
+    border: none;
+    overflow: hidden;
+  }
+}
